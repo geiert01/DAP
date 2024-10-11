@@ -1,0 +1,9 @@
+# Ignore all .idea/ files except the following:
+.idea/*
+!.idea/misc.xml
+!.idea/modules.xml
+!.idea/inspectionProfiles
+!.idea/vcs.xml
+
+# Ignore user-specific workspace settings
+.idea/workspace.xml
