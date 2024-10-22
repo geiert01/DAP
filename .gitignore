@@ -7,3 +7,6 @@
 
 # Ignore user-specific workspace settings
 .idea/workspace.xml
+
+# all pdfs
+*.pdf
