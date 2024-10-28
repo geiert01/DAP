@@ -12,3 +12,5 @@
 *.pdf
 
 test.py
+
+runs/*
