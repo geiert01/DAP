@@ -12,7 +12,7 @@ $
 
 # TODO
 - dqn und ppo verstehen
-- plasticity loss und lipschitz methoden 
+- methoden plasticity loss zu messen und lipschitz zu enforcen 
 
 
 
