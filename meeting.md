@@ -12,8 +12,9 @@ $
 
 # TODO
 - dqn und ppo verstehen
-- methoden plasticity loss zu messen und lipschitz zu enforcen 
-
 
 
 server passwort ist gleich wie uspace passwort
+
+https://wiki.univie.ac.at/display/DataMining/Server+Hardware+-+Getting+Started
+https://wiki.univie.ac.at/display/DataMining/Server+Hardware+-+Best+Practice
