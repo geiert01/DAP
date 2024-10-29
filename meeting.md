@@ -28,10 +28,14 @@ https://wiki.univie.ac.at/display/DataMining/Server+Hardware+-+Best+Practice
 - Verschiedene Methoden zum Messen aus Paper
   file:///C:/Users/t_gei/Documents/Master/3.%20Semester/DAP/Zusammenhang%20zwischen%20Plasticity%20Loss%20und%20Data%20Augmentation.pdf
   - Weight norm
+    - Weight norm widersprüchlich zu spectral norm?
+    - Wenn wir spectral normalisieren, wird weight norm automatisch kleiner? Schlecht?
   - Feature rank
   - loss landscape
+    -  Loss Landscape geben keinen exakten Wert zum Messen, wollen wir daher eher Methoden wie FAU?
   - Fraction of active units
-- Viele Methoden zB Loss Landscape geben keinen exakten Wert zum Messen, wollen wir daher eher Methoden wie FAU?
+    - Wurde auch im Paper verwendet, und gibt exakten Wert
+
 - Schwierig informationen, Definitionen, Erklärungen zu finden
 - Vor und Nachteile relevant?
 
