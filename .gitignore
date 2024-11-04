@@ -7,3 +7,5 @@
 
 # Ignore user-specific workspace settings
 .idea/workspace.xml
+
+.DS_Store
