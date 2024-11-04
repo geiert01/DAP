@@ -12,7 +12,10 @@ import torch.nn.functional as F
 import torch.optim as optim
 import tyro
 from stable_baselines3.common.buffers import ReplayBuffer
+
 from torch.utils.tensorboard import SummaryWriter
+
+from memory_profiler import memory_usage
 
 
 @dataclass
@@ -132,17 +135,20 @@ def track_calculation(model):
 
     # Record start time
     start_time = time.perf_counter()
+    mem_usage_before = memory_usage()[0]
 
     # Perform the calculation
     result = compute_lipschitz_constant(model)
 
     # Record end time
     end_time = time.perf_counter()
+    mem_usage_after = memory_usage()[0]
 
     # Calculate elapsed time and memory usage
     elapsed_time = end_time - start_time
+    used_memory = mem_usage_after - mem_usage_before
 
-    return result, elapsed_time
+    return result, elapsed_time, used_memory
 
 
 def compute_local_lipschitz_constant(model, env, num_samples=100, epsilon=1e-2):
@@ -333,12 +339,17 @@ poetry run pip install "stable_baselines3==2.0.0a1"
                 global_step > args.learning_starts
                 and global_step % args.log_lipschitz_every == 0
             ):
-                lipschitz_constant, comp_time = track_calculation(q_network)
+                lipschitz_constant, comp_time, used_memory = track_calculation(
+                    q_network
+                )
                 writer.add_scalar(
                     "metrics/lipschitz_constant", lipschitz_constant, global_step
                 )
                 writer.add_scalar(
                     "metrics/lipschitz_constant_comp_time", comp_time, global_step
+                )
+                writer.add_scalar(
+                    "metrics/lipschitz_constant_used_memory", used_memory, global_step
                 )
                 if args.track:
                     wandb.log(
@@ -347,6 +358,10 @@ poetry run pip install "stable_baselines3==2.0.0a1"
                     )
                     wandb.log(
                         {"metrics/lipschitz_constant_comp_time": comp_time},
+                        step=global_step,
+                    )
+                    wandb.log(
+                        {"metrics/lipschitz_constant_used_memory": used_memory},
                         step=global_step,
                     )
                 # print(f"Lipschitz constant at step {global_step}: {lipschitz_constant}")
