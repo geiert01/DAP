@@ -24,6 +24,8 @@ https://wiki.univie.ac.at/display/DataMining/Server+Hardware+-+Best+Practice
   - ist das was für uns?
 - Almost orthogonal layers for efficient general ...
 
+
+
 ## Plasticity Loss
 - Verschiedene Methoden zum Messen aus Paper
   file:///C:/Users/t_gei/Documents/Master/3.%20Semester/DAP/Zusammenhang%20zwischen%20Plasticity%20Loss%20und%20Data%20Augmentation.pdf
@@ -39,3 +41,18 @@ https://wiki.univie.ac.at/display/DataMining/Server+Hardware+-+Best+Practice
 - Schwierig informationen, Definitionen, Erklärungen zu finden
 - Vor und Nachteile relevant?
 
+
+
+
+
+
+jeden 10000 schritt im trinaing
+mit neighborhood sampling berechnen
+
+wie kann man lipschitz konstante aproxximieren?
+versuchen zu implementieren (auf cartpole)
+wie teuer ist es zu berechnen
+noch literatur anschauen, um lipschitz konstante zu approximieren
+
+
+terminal ls
