@@ -12,3 +12,7 @@
 *.pdf
 
 test.py
+
+.DS_Store
+
+cleanrl_felix/wandb/run-*
