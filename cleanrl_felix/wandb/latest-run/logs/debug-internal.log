@@ -1,0 +1,20 @@
+{"time":"2024-11-04T16:41:28.875828+01:00","level":"INFO","msg":"using version","core version":"0.18.3"}
+{"time":"2024-11-04T16:41:28.875907+01:00","level":"INFO","msg":"created symlink","path":"/Users/felixwille/PycharmProjects/Data_Analysis_Project/cleanrl_repo/cleanrl/wandb/run-20241104_164128-0r9gowl6/logs/debug-core.log"}
+{"time":"2024-11-04T16:41:28.879447+01:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-11-04T16:41:28.887913+01:00","level":"INFO","msg":"created new stream","id":"0r9gowl6"}
+{"time":"2024-11-04T16:41:28.887984+01:00","level":"INFO","msg":"stream: started","id":"0r9gowl6"}
+{"time":"2024-11-04T16:41:28.888017+01:00","level":"INFO","msg":"sender: started","stream_id":{"value":"0r9gowl6"}}
+{"time":"2024-11-04T16:41:28.888092+01:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"0r9gowl6"}}
+{"time":"2024-11-04T16:41:28.887987+01:00","level":"INFO","msg":"handler: started","stream_id":{"value":"0r9gowl6"}}
+{"time":"2024-11-04T16:41:29.411219+01:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-11-04T16:41:29.412231+01:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-11-04T16:41:29.412862+01:00","level":"ERROR","msg":"git repo not found","error":"repository does not exist"}
+{"time":"2024-11-04T16:41:39.473888+01:00","level":"INFO","msg":"tensorboard: no root directory after 10 seconds, using working directory"}
+{"time":"2024-11-04T16:52:05.588537+01:00","level":"INFO","msg":"stream: closing","id":"0r9gowl6"}
+{"time":"2024-11-04T16:52:05.58856+01:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-11-04T16:52:05.588586+01:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-11-04T16:52:10.01342+01:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-11-04T16:52:10.527425+01:00","level":"INFO","msg":"handler: closed","stream_id":{"value":"0r9gowl6"}}
+{"time":"2024-11-04T16:52:10.52755+01:00","level":"INFO","msg":"writer: Close: closed","stream_id":{"value":"0r9gowl6"}}
+{"time":"2024-11-04T16:52:10.52761+01:00","level":"INFO","msg":"sender: closed","stream_id":{"value":"0r9gowl6"}}
+{"time":"2024-11-04T16:52:10.528058+01:00","level":"INFO","msg":"stream: closed","id":"0r9gowl6"}
