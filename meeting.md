@@ -109,7 +109,7 @@ deepmindcontrol:
 für atari vorher swig installieren
 
 
-
+- https://arxiv.org/abs/2105.05246 methode um lipschitz in local neighborhood auszurechnen
 
 # code todo
 dqn_atari von cleanrl dort probieren lipschitz zu tracken
