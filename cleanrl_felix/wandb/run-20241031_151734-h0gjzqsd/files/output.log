@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/Users/felixwille/PycharmProjects/Data_Analysis_Project/cleanrl_repo/cleanrl/dqn_aol.py", line 130, in <module>
+    q_network = QNetwork(envs).to(device)
+                ^^^^^^^^^^^^^^
+  File "/Users/felixwille/PycharmProjects/Data_Analysis_Project/cleanrl_repo/cleanrl/dqn_aol.py", line 64, in __init__
+    self.layers = nn.ModuleList([
+                  ^^^^^^^^^^^^^^^
+  File "/Users/felixwille/anaconda3/envs/basic_rl/lib/python3.11/site-packages/torch/nn/modules/container.py", line 279, in __init__
+    self += modules
+  File "/Users/felixwille/anaconda3/envs/basic_rl/lib/python3.11/site-packages/torch/nn/modules/container.py", line 320, in __iadd__
+    return self.extend(modules)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felixwille/anaconda3/envs/basic_rl/lib/python3.11/site-packages/torch/nn/modules/container.py", line 402, in extend
+    self.add_module(str(offset + i), module)
+  File "/Users/felixwille/anaconda3/envs/basic_rl/lib/python3.11/site-packages/torch/nn/modules/module.py", line 584, in add_module
+    raise TypeError(f"{torch.typename(module)} is not a Module subclass")
+TypeError: __main__.QNetwork._aol_linear.<locals>.layer is not a Module subclass

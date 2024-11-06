@@ -1,0 +1,76 @@
+global_step=199, episodic_return=[-200.]
+global_step=399, episodic_return=[-200.]
+global_step=599, episodic_return=[-200.]
+global_step=799, episodic_return=[-200.]
+global_step=999, episodic_return=[-200.]
+global_step=1199, episodic_return=[-200.]
+global_step=1399, episodic_return=[-200.]
+global_step=1599, episodic_return=[-200.]
+global_step=1799, episodic_return=[-200.]
+global_step=1999, episodic_return=[-200.]
+global_step=2199, episodic_return=[-200.]
+global_step=2399, episodic_return=[-200.]
+global_step=2599, episodic_return=[-200.]
+global_step=2799, episodic_return=[-200.]
+global_step=2999, episodic_return=[-200.]
+global_step=3199, episodic_return=[-200.]
+global_step=3399, episodic_return=[-200.]
+global_step=3599, episodic_return=[-200.]
+global_step=3799, episodic_return=[-200.]
+global_step=3999, episodic_return=[-200.]
+global_step=4199, episodic_return=[-200.]
+global_step=4399, episodic_return=[-200.]
+global_step=4599, episodic_return=[-200.]
+global_step=4799, episodic_return=[-200.]
+global_step=4999, episodic_return=[-200.]
+SPS: 12523
+global_step=5199, episodic_return=[-200.]
+SPS: 10769
+SPS: 9599
+global_step=5399, episodic_return=[-200.]
+SPS: 8699
+SPS: 7975
+global_step=5599, episodic_return=[-200.]
+SPS: 7323
+SPS: 6839
+global_step=5799, episodic_return=[-200.]
+SPS: 6409
+SPS: 6022
+global_step=5999, episodic_return=[-200.]
+SPS: 5688
+wandb: WARNING Step cannot be set when using tensorboard syncing. Please use `run.define_metric(...)` to define a custom metric to log your step values.
+Traceback (most recent call last):
+  File "/Users/felixwille/PycharmProjects/Data_Analysis_Project/cleanrl_repo/cleanrl/local_lc_dqn.py", line 296, in <module>
+    local_lipschitz_constant = compute_local_lipschitz_constant(q_network, envs.envs[0])
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felixwille/PycharmProjects/Data_Analysis_Project/cleanrl_repo/cleanrl/local_lc_dqn.py", line 156, in compute_local_lipschitz_constant
+    original_output = model(x).cpu().detach()
+                      ^^^^^^^^
+  File "/Users/felixwille/anaconda3/envs/basic_rl/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felixwille/anaconda3/envs/basic_rl/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felixwille/PycharmProjects/Data_Analysis_Project/cleanrl_repo/cleanrl/local_lc_dqn.py", line 111, in forward
+    return self.network(x)
+           ^^^^^^^^^^^^^^^
+  File "/Users/felixwille/anaconda3/envs/basic_rl/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felixwille/anaconda3/envs/basic_rl/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felixwille/anaconda3/envs/basic_rl/lib/python3.11/site-packages/torch/nn/modules/container.py", line 217, in forward
+    input = module(input)
+            ^^^^^^^^^^^^^
+  File "/Users/felixwille/anaconda3/envs/basic_rl/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felixwille/anaconda3/envs/basic_rl/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felixwille/anaconda3/envs/basic_rl/lib/python3.11/site-packages/torch/nn/modules/linear.py", line 116, in forward
+    return F.linear(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Placeholder storage has not been allocated on MPS device!

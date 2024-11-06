@@ -1,0 +1,20 @@
+{"time":"2024-11-04T18:36:55.997305+01:00","level":"INFO","msg":"using version","core version":"0.18.3"}
+{"time":"2024-11-04T18:36:55.997365+01:00","level":"INFO","msg":"created symlink","path":"/Users/felixwille/PycharmProjects/Data_Analysis_Project/DAP/cleanrl_felix/wandb/run-20241104_183655-npptxcn4/logs/debug-core.log"}
+{"time":"2024-11-04T18:36:56.001028+01:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-11-04T18:36:56.011047+01:00","level":"INFO","msg":"created new stream","id":"npptxcn4"}
+{"time":"2024-11-04T18:36:56.011144+01:00","level":"INFO","msg":"stream: started","id":"npptxcn4"}
+{"time":"2024-11-04T18:36:56.011167+01:00","level":"INFO","msg":"handler: started","stream_id":{"value":"npptxcn4"}}
+{"time":"2024-11-04T18:36:56.011246+01:00","level":"INFO","msg":"sender: started","stream_id":{"value":"npptxcn4"}}
+{"time":"2024-11-04T18:36:56.01115+01:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"npptxcn4"}}
+{"time":"2024-11-04T18:36:56.330653+01:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-11-04T18:36:56.331605+01:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-11-04T18:36:56.33246+01:00","level":"ERROR","msg":"git repo not found","error":"repository does not exist"}
+{"time":"2024-11-04T18:37:06.399773+01:00","level":"INFO","msg":"tensorboard: no root directory after 10 seconds, using working directory"}
+{"time":"2024-11-04T18:47:42.874323+01:00","level":"INFO","msg":"stream: closing","id":"npptxcn4"}
+{"time":"2024-11-04T18:47:42.874345+01:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-11-04T18:47:42.874373+01:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-11-04T18:47:47.435027+01:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-11-04T18:47:48.101323+01:00","level":"INFO","msg":"handler: closed","stream_id":{"value":"npptxcn4"}}
+{"time":"2024-11-04T18:47:48.101368+01:00","level":"INFO","msg":"writer: Close: closed","stream_id":{"value":"npptxcn4"}}
+{"time":"2024-11-04T18:47:48.101402+01:00","level":"INFO","msg":"sender: closed","stream_id":{"value":"npptxcn4"}}
+{"time":"2024-11-04T18:47:48.10185+01:00","level":"INFO","msg":"stream: closed","id":"npptxcn4"}

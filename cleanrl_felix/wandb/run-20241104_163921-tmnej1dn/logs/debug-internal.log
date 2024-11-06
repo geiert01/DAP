@@ -1,0 +1,12 @@
+{"time":"2024-11-04T16:39:21.866069+01:00","level":"INFO","msg":"using version","core version":"0.18.3"}
+{"time":"2024-11-04T16:39:21.866131+01:00","level":"INFO","msg":"created symlink","path":"/Users/felixwille/PycharmProjects/Data_Analysis_Project/cleanrl_repo/cleanrl/wandb/run-20241104_163921-tmnej1dn/logs/debug-core.log"}
+{"time":"2024-11-04T16:39:21.869907+01:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-11-04T16:39:21.878725+01:00","level":"INFO","msg":"created new stream","id":"tmnej1dn"}
+{"time":"2024-11-04T16:39:21.878809+01:00","level":"INFO","msg":"stream: started","id":"tmnej1dn"}
+{"time":"2024-11-04T16:39:21.878843+01:00","level":"INFO","msg":"handler: started","stream_id":{"value":"tmnej1dn"}}
+{"time":"2024-11-04T16:39:21.878816+01:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"tmnej1dn"}}
+{"time":"2024-11-04T16:39:21.878911+01:00","level":"INFO","msg":"sender: started","stream_id":{"value":"tmnej1dn"}}
+{"time":"2024-11-04T16:39:22.435025+01:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-11-04T16:39:22.435981+01:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-11-04T16:39:22.436488+01:00","level":"ERROR","msg":"git repo not found","error":"repository does not exist"}
+{"time":"2024-11-04T16:39:32.498001+01:00","level":"INFO","msg":"tensorboard: no root directory after 10 seconds, using working directory"}

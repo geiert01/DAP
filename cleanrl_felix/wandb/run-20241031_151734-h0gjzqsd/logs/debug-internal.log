@@ -1,0 +1,20 @@
+{"time":"2024-10-31T15:17:34.94267+01:00","level":"INFO","msg":"using version","core version":"0.18.3"}
+{"time":"2024-10-31T15:17:34.942718+01:00","level":"INFO","msg":"created symlink","path":"/Users/felixwille/PycharmProjects/Data_Analysis_Project/cleanrl_repo/cleanrl/wandb/run-20241031_151734-h0gjzqsd/logs/debug-core.log"}
+{"time":"2024-10-31T15:17:34.968093+01:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-10-31T15:17:34.979631+01:00","level":"INFO","msg":"created new stream","id":"h0gjzqsd"}
+{"time":"2024-10-31T15:17:34.979672+01:00","level":"INFO","msg":"stream: started","id":"h0gjzqsd"}
+{"time":"2024-10-31T15:17:34.979698+01:00","level":"INFO","msg":"sender: started","stream_id":{"value":"h0gjzqsd"}}
+{"time":"2024-10-31T15:17:34.979678+01:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"h0gjzqsd"}}
+{"time":"2024-10-31T15:17:34.979725+01:00","level":"INFO","msg":"handler: started","stream_id":{"value":"h0gjzqsd"}}
+{"time":"2024-10-31T15:17:35.370563+01:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-10-31T15:17:35.372854+01:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-10-31T15:17:35.374097+01:00","level":"ERROR","msg":"git repo not found","error":"repository does not exist"}
+{"time":"2024-10-31T15:17:35.489041+01:00","level":"INFO","msg":"stream: closing","id":"h0gjzqsd"}
+{"time":"2024-10-31T15:17:35.489453+01:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-10-31T15:17:35.489477+01:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-10-31T15:17:45.475465+01:00","level":"INFO","msg":"tensorboard: no root directory after 10 seconds, using working directory"}
+{"time":"2024-10-31T15:17:49.356841+01:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-10-31T15:17:49.769936+01:00","level":"INFO","msg":"handler: closed","stream_id":{"value":"h0gjzqsd"}}
+{"time":"2024-10-31T15:17:49.769961+01:00","level":"INFO","msg":"writer: Close: closed","stream_id":{"value":"h0gjzqsd"}}
+{"time":"2024-10-31T15:17:49.769971+01:00","level":"INFO","msg":"sender: closed","stream_id":{"value":"h0gjzqsd"}}
+{"time":"2024-10-31T15:17:49.770383+01:00","level":"INFO","msg":"stream: closed","id":"h0gjzqsd"}

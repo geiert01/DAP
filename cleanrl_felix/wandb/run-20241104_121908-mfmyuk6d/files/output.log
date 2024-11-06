@@ -1,0 +1,48 @@
+global_step=199, episodic_return=[-200.]
+global_step=399, episodic_return=[-200.]
+global_step=599, episodic_return=[-200.]
+global_step=799, episodic_return=[-200.]
+global_step=999, episodic_return=[-200.]
+global_step=1199, episodic_return=[-200.]
+global_step=1399, episodic_return=[-200.]
+global_step=1599, episodic_return=[-200.]
+global_step=1799, episodic_return=[-200.]
+global_step=1999, episodic_return=[-200.]
+global_step=2199, episodic_return=[-200.]
+global_step=2399, episodic_return=[-200.]
+global_step=2599, episodic_return=[-200.]
+global_step=2799, episodic_return=[-200.]
+global_step=2999, episodic_return=[-200.]
+global_step=3199, episodic_return=[-200.]
+global_step=3399, episodic_return=[-200.]
+global_step=3599, episodic_return=[-200.]
+global_step=3799, episodic_return=[-200.]
+global_step=3999, episodic_return=[-200.]
+global_step=4199, episodic_return=[-200.]
+global_step=4399, episodic_return=[-200.]
+global_step=4599, episodic_return=[-200.]
+global_step=4799, episodic_return=[-200.]
+global_step=4999, episodic_return=[-200.]
+SPS: 9832
+global_step=5199, episodic_return=[-200.]
+SPS: 8777
+SPS: 8006
+global_step=5399, episodic_return=[-200.]
+SPS: 7395
+SPS: 6797
+global_step=5599, episodic_return=[-200.]
+SPS: 6371
+SPS: 6013
+global_step=5799, episodic_return=[-200.]
+SPS: 5674
+SPS: 5405
+global_step=5999, episodic_return=[-200.]
+SPS: 5172
+Traceback (most recent call last):
+  File "/Users/felixwille/PycharmProjects/Data_Analysis_Project/cleanrl_repo/cleanrl/dqn.py", line 245, in <module>
+    lipschitz_constant = compute_lipschitz_constant(q_network)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felixwille/PycharmProjects/Data_Analysis_Project/cleanrl_repo/cleanrl/dqn.py", line 126, in compute_lipschitz_constant
+    spectral_norm = torch.linalg.norm(weight, ord=2)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+NotImplementedError: The operator 'aten::_linalg_svd.U' is not currently implemented for the MPS device. If you want this op to be added in priority during the prototype phase of this feature, please comment on https://github.com/pytorch/pytorch/issues/77764. As a temporary fix, you can set the environment variable `PYTORCH_ENABLE_MPS_FALLBACK=1` to use the CPU as a fallback for this op. WARNING: this will be slower than running natively on MPS.

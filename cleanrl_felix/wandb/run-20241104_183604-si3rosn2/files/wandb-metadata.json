@@ -1,0 +1,37 @@
+{
+  "os":  "macOS-15.0.1-arm64-arm-64bit",
+  "python":  "3.11.10",
+  "startedAt":  "2024-11-04T17:36:04.596722Z",
+  "program":  "/Users/felixwille/PycharmProjects/Data_Analysis_Project/DAP/cleanrl_felix/local_lc_dqn.py",
+  "codePath":  "cleanrl_felix/local_lc_dqn.py",
+  "git":  {
+    "remote":  "https://github.com/geiert01/DAP.git",
+    "commit":  "a28fd83f451bd14e11a9f116694f52521fbd7a90"
+  },
+  "email":  "felix.wille@hotmail.de",
+  "root":  "/Users/felixwille/PycharmProjects/Data_Analysis_Project/DAP/cleanrl_felix",
+  "host":  "Felixs-MacBook-Pro-8.local",
+  "username":  "felixwille",
+  "executable":  "/Users/felixwille/anaconda3/envs/basic_rl/bin/python",
+  "codePathLocal":  "local_lc_dqn.py",
+  "cpu_count":  16,
+  "cpu_count_logical":  16,
+  "disk":  {
+    "/":  {
+      "total":  "994662584320",
+      "used":  "119144488960"
+    }
+  },
+  "memory":  {
+    "total":  "68719476736"
+  },
+  "cpu":  {
+    "count":  16,
+    "countLogical":  16
+  },
+  "gpuapple":  {
+    "gpuType":  "Apple M3 Max",
+    "vendor":  "sppci_vendor_Apple",
+    "cores":  40
+  }
+}

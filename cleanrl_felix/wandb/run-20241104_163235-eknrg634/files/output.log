@@ -1,0 +1,59 @@
+global_step=199, episodic_return=[-200.]
+global_step=399, episodic_return=[-200.]
+global_step=599, episodic_return=[-200.]
+global_step=799, episodic_return=[-200.]
+global_step=999, episodic_return=[-200.]
+global_step=1199, episodic_return=[-200.]
+global_step=1399, episodic_return=[-200.]
+global_step=1599, episodic_return=[-200.]
+global_step=1799, episodic_return=[-200.]
+global_step=1999, episodic_return=[-200.]
+global_step=2199, episodic_return=[-200.]
+global_step=2399, episodic_return=[-200.]
+global_step=2599, episodic_return=[-200.]
+global_step=2799, episodic_return=[-200.]
+global_step=2999, episodic_return=[-200.]
+global_step=3199, episodic_return=[-200.]
+global_step=3399, episodic_return=[-200.]
+global_step=3599, episodic_return=[-200.]
+global_step=3799, episodic_return=[-200.]
+global_step=3999, episodic_return=[-200.]
+global_step=4199, episodic_return=[-200.]
+global_step=4399, episodic_return=[-200.]
+global_step=4599, episodic_return=[-200.]
+global_step=4799, episodic_return=[-200.]
+global_step=4999, episodic_return=[-200.]
+SPS: 12141
+global_step=5199, episodic_return=[-200.]
+SPS: 10543
+SPS: 9414
+global_step=5399, episodic_return=[-200.]
+SPS: 8547
+SPS: 7772
+global_step=5599, episodic_return=[-200.]
+SPS: 7198
+SPS: 6718
+global_step=5799, episodic_return=[-200.]
+SPS: 6263
+SPS: 5920
+global_step=5999, episodic_return=[-200.]
+SPS: 5617
+wandb: WARNING Step cannot be set when using tensorboard syncing. Please use `run.define_metric(...)` to define a custom metric to log your step values.
+Traceback (most recent call last):
+  File "/Users/felixwille/PycharmProjects/Data_Analysis_Project/cleanrl_repo/cleanrl/local_lc_dqn.py", line 294, in <module>
+    local_lipschitz_constant = compute_local_lipschitz_constant(q_network, envs.envs[0])
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felixwille/PycharmProjects/Data_Analysis_Project/cleanrl_repo/cleanrl/local_lc_dqn.py", line 134, in compute_local_lipschitz_constant
+    obs_space_dim = np.array(env.single_observation_space.shape).prod()
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felixwille/anaconda3/envs/basic_rl/lib/python3.11/site-packages/gymnasium/core.py", line 282, in __getattr__
+    return getattr(self.env, name)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felixwille/anaconda3/envs/basic_rl/lib/python3.11/site-packages/gymnasium/core.py", line 282, in __getattr__
+    return getattr(self.env, name)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/felixwille/anaconda3/envs/basic_rl/lib/python3.11/site-packages/gymnasium/core.py", line 282, in __getattr__
+    return getattr(self.env, name)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  [Previous line repeated 1 more time]
+AttributeError: 'MountainCarEnv' object has no attribute 'single_observation_space'

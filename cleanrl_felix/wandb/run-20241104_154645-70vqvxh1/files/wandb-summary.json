@@ -1,0 +1,1 @@
+{"losses/q_values":-40.305546,"_wandb":{"runtime":1983},"metrics/lipschitz_constant":59679.277,"_runtime":1983.446096,"global_step":1499903,"charts/episodic_return":-93,"charts/episodic_length":93,"charts/SPS":756,"losses/td_loss":0.44634944,"_step":69683,"_timestamp":1.730733588364209e+09}

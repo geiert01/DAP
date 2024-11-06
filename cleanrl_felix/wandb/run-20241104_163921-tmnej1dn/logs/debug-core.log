@@ -1,0 +1,7 @@
+{"time":"2024-11-04T16:39:21.065981+01:00","level":"INFO","msg":"started logging, with flags","port-filename":"/var/folders/bn/myxhlqpn24j6l21cwwcjgplc0000gn/T/tmpkstqw0le/port-68070.txt","pid":68070,"debug":false,"disable-analytics":false}
+{"time":"2024-11-04T16:39:21.066025+01:00","level":"INFO","msg":"FeatureState","shutdownOnParentExitEnabled":false}
+{"time":"2024-11-04T16:39:21.073847+01:00","level":"INFO","msg":"Will exit if parent process dies.","ppid":68070}
+{"time":"2024-11-04T16:39:21.073839+01:00","level":"INFO","msg":"server is running","addr":{"IP":"127.0.0.1","Port":53385,"Zone":""}}
+{"time":"2024-11-04T16:39:21.267488+01:00","level":"INFO","msg":"connection: ManageConnectionData: new connection created","id":"127.0.0.1:53386"}
+{"time":"2024-11-04T16:39:21.865551+01:00","level":"INFO","msg":"handleInformInit: received","streamId":"tmnej1dn","id":"127.0.0.1:53386"}
+{"time":"2024-11-04T16:39:21.87882+01:00","level":"INFO","msg":"handleInformInit: stream started","streamId":"tmnej1dn","id":"127.0.0.1:53386"}

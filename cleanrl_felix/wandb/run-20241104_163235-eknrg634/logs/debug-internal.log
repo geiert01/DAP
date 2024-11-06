@@ -1,0 +1,20 @@
+{"time":"2024-11-04T16:32:35.698104+01:00","level":"INFO","msg":"using version","core version":"0.18.3"}
+{"time":"2024-11-04T16:32:35.698128+01:00","level":"INFO","msg":"created symlink","path":"/Users/felixwille/PycharmProjects/Data_Analysis_Project/cleanrl_repo/cleanrl/wandb/run-20241104_163235-eknrg634/logs/debug-core.log"}
+{"time":"2024-11-04T16:32:35.699699+01:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-11-04T16:32:35.705021+01:00","level":"INFO","msg":"created new stream","id":"eknrg634"}
+{"time":"2024-11-04T16:32:35.705073+01:00","level":"INFO","msg":"stream: started","id":"eknrg634"}
+{"time":"2024-11-04T16:32:35.705114+01:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"eknrg634"}}
+{"time":"2024-11-04T16:32:35.705075+01:00","level":"INFO","msg":"handler: started","stream_id":{"value":"eknrg634"}}
+{"time":"2024-11-04T16:32:35.705102+01:00","level":"INFO","msg":"sender: started","stream_id":{"value":"eknrg634"}}
+{"time":"2024-11-04T16:32:36.058429+01:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-11-04T16:32:36.058866+01:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-11-04T16:32:36.059476+01:00","level":"ERROR","msg":"git repo not found","error":"repository does not exist"}
+{"time":"2024-11-04T16:32:37.632796+01:00","level":"INFO","msg":"stream: closing","id":"eknrg634"}
+{"time":"2024-11-04T16:32:37.632834+01:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-11-04T16:32:37.632991+01:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-11-04T16:32:46.134609+01:00","level":"INFO","msg":"tensorboard: no root directory after 10 seconds, using working directory"}
+{"time":"2024-11-04T16:32:50.21125+01:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-11-04T16:32:50.621306+01:00","level":"INFO","msg":"writer: Close: closed","stream_id":{"value":"eknrg634"}}
+{"time":"2024-11-04T16:32:50.621286+01:00","level":"INFO","msg":"handler: closed","stream_id":{"value":"eknrg634"}}
+{"time":"2024-11-04T16:32:50.621337+01:00","level":"INFO","msg":"sender: closed","stream_id":{"value":"eknrg634"}}
+{"time":"2024-11-04T16:32:50.6218+01:00","level":"INFO","msg":"stream: closed","id":"eknrg634"}

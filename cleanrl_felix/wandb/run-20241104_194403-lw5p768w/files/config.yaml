@@ -1,0 +1,88 @@
+_wandb:
+    value:
+        cli_version: 0.18.3
+        code_path: code/cleanrl_felix/local_lc_dqn.py
+        m: []
+        python_version: 3.11.10
+        t:
+            "1":
+                - 1
+                - 55
+            "2":
+                - 1
+                - 55
+            "3":
+                - 13
+                - 16
+                - 23
+                - 35
+                - 55
+                - 61
+            "4": 3.11.10
+            "5": 0.18.3
+            "8":
+                - 5
+            "12": 0.18.3
+            "13": darwin-arm64
+batch_size:
+    value: 64
+buffer_size:
+    value: 100000
+capture_video:
+    value: false
+cuda:
+    value: true
+end_e:
+    value: 0.01
+end_reg_factor:
+    value: 0.03
+env_id:
+    value: MountainCar-v0
+exp_name:
+    value: local_lc_dqn
+exploration_fraction:
+    value: 0.3
+gamma:
+    value: 0.99
+hf_entity:
+    value: ""
+learning_rate:
+    value: 0.001
+learning_starts:
+    value: 5000
+lipschitz_cons_upper_bd:
+    value: 20
+log_lipschitz_every:
+    value: 2000
+num_envs:
+    value: 1
+reg_factor:
+    value: 0.5
+regularization_fraction:
+    value: 0.5
+save_model:
+    value: true
+seed:
+    value: 1
+start_e:
+    value: 1
+start_reg_factor:
+    value: 0.6
+target_network_frequency:
+    value: 1000
+tau:
+    value: 1
+torch_deterministic:
+    value: true
+total_timesteps:
+    value: 500000
+track:
+    value: true
+train_frequency:
+    value: 4
+upload_model:
+    value: false
+wandb_entity:
+    value: null
+wandb_project_name:
+    value: Lipschitz

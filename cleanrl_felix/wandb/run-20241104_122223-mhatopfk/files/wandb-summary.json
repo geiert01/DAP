@@ -1,0 +1,1 @@
+{"global_step":499996,"_timestamp":1.7307199677123861e+09,"charts/SPS":801,"_runtime":624.710901,"losses/q_values":-39.98519,"charts/episodic_return":-157,"_wandb":{"runtime":624},"losses/td_loss":0.254995,"metrics/lipschitz_constant":25435.059,"charts/episodic_length":157,"_step":21187}

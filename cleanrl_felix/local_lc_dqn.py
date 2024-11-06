@@ -78,6 +78,13 @@ class Args:
     """the frequency of training"""
     log_lipschitz_every: int = 2000
     """Log Lipschitz constant every 2000 timesteps"""
+    reg_factor: float = 0.5
+    """How strongly the lipschitz-regularization is applied"""
+    start_reg_factor: float = 0.6
+    end_reg_factor: float = 0.03
+    regularization_fraction: float = 0.5
+    lipschitz_cons_upper_bd: int = 20
+
 
 
 def make_env(env_id, seed, idx, capture_video, run_name):
@@ -114,6 +121,11 @@ class QNetwork(nn.Module):
 def linear_schedule(start_e: float, end_e: float, duration: int, t: int):
     slope = (end_e - start_e) / duration
     return max(slope * t + start_e, end_e)
+
+def linear_regularization(start_reg_factor, end_reg_factor, regularization_fraction, total_timesteps, t):
+    duration = regularization_fraction * total_timesteps
+    slope = (end_reg_factor - start_reg_factor) / duration
+    return max(slope * t + start_reg_factor, end_reg_factor)
 
 
 def compute_lipschitz_constant(model):
@@ -172,8 +184,18 @@ def compute_local_lipschitz_constant(model, env, num_samples=100, epsilon=1e-2):
     return max_ratio
 
 
+def rescale_weights_by_lipschitz(model, reg_factor, lipschitz_const_ub):
+    """Calculate the Lipschitz constant for each weight matrix and rescale it."""
+    for layer in model.modules():
+        if isinstance(layer, nn.Linear):
+            # Calculate the spectral norm (Lipschitz constant) of the weight matrix
+            weight = layer.weight.data.cpu()  # Move to CPU for the calculation
+            spectral_norm = torch.linalg.norm(weight, ord=2).item()
 
-
+            # Rescale the weight matrix if the Lipschitz constant is greater than 1
+            #print("spectralnorm", spectral_norm, "| ub: lipschitz_const_ub", lipschitz_const_ub)
+            if spectral_norm > lipschitz_const_ub:
+                layer.weight.data /= (spectral_norm * reg_factor)
 
 
 if __name__ == "__main__":
@@ -294,16 +316,17 @@ poetry run pip install "stable_baselines3==2.0.0a1"
                 writer.add_scalar("metrics/lipschitz_constant", lipschitz_constant, global_step)
                 if args.track:
                     wandb.log({"metrics/lipschitz_constant": lipschitz_constant}, step=global_step)
-                #print(f"Lipschitz constant at step {global_step}: {lipschitz_constant}")
 
-            # Add this inside the main training loop after the training logic
             if global_step > args.learning_starts and global_step % args.log_lipschitz_every == 0:
                 local_lipschitz_constant = compute_local_lipschitz_constant(q_network, envs.envs[0])
                 writer.add_scalar("metrics/local_lipschitz_constant", local_lipschitz_constant, global_step)
                 if args.track:
                     wandb.log({"metrics/local_lipschitz_constant": local_lipschitz_constant}, step=global_step)
-                # Optional: print to console for real-time feedback
-                #print(f"Local Lipschitz constant at step {global_step}: {local_lipschitz_constant}")
+
+            if global_step > args.learning_starts and global_step % 10000 == 0:
+                # Rescale weights by their Lipschitz constant
+                #current_reg_factor = linear_regularization(args.start_reg_factor, args.end_reg_factor, args.regularization_fraction, args.total_timesteps, global_step)
+                rescale_weights_by_lipschitz(q_network, args.reg_factor, args.lipschitz_cons_upper_bd)
 
             # update target network
             if global_step % args.target_network_frequency == 0:

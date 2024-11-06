@@ -1,0 +1,37 @@
+{
+  "os":  "macOS-15.0.1-arm64-arm-64bit",
+  "python":  "3.11.10",
+  "startedAt":  "2024-11-04T14:46:45.037932Z",
+  "program":  "/Users/felixwille/PycharmProjects/Data_Analysis_Project/cleanrl_repo/cleanrl/dqn.py",
+  "codePath":  "cleanrl/dqn.py",
+  "git":  {
+    "remote":  "https://github.com/vwxyzjn/cleanrl",
+    "commit":  "38c313f8326b5049fe941a873e798485bccf18e5"
+  },
+  "email":  "felix.wille@hotmail.de",
+  "root":  "/Users/felixwille/PycharmProjects/Data_Analysis_Project/cleanrl_repo/cleanrl",
+  "host":  "Felixs-MacBook-Pro-8.local",
+  "username":  "felixwille",
+  "executable":  "/Users/felixwille/anaconda3/envs/basic_rl/bin/python",
+  "codePathLocal":  "dqn.py",
+  "cpu_count":  16,
+  "cpu_count_logical":  16,
+  "disk":  {
+    "/":  {
+      "total":  "994662584320",
+      "used":  "118775754752"
+    }
+  },
+  "memory":  {
+    "total":  "68719476736"
+  },
+  "cpu":  {
+    "count":  16,
+    "countLogical":  16
+  },
+  "gpuapple":  {
+    "gpuType":  "Apple M3 Max",
+    "vendor":  "sppci_vendor_Apple",
+    "cores":  40
+  }
+}
