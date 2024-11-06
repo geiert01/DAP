@@ -75,3 +75,44 @@ https://arxiv.org/pdf/1312.6199 to calculate lipschitz
 
 #####  Model based  RL - lipschitz continuity
 https://arxiv.org/pdf/1804.07193
+
+
+
+#### TODO BIS 2 wochen
+
+
+remote ssh plugin
+conda installieren
+entwickeln auf dem server
+mnt/data ist local server
+home directory ist gebakuped, begrenzter platz 
+geiert01dm: 100GB platz
+
+- (ein conda auf home, kann man auf allen server benutzen) -> 10 gb platz -> aufpassen was man da installiert und was nicht
+  - manchmal .cache inhalt löschen (timo fragen wenn nötig, also kein speicher)
+- mt/data: auch da conda rein installieren ABER NUR AUF EINEM SERVER. Aber kein stress mit speicher platz, mit mehr enviroments etc 
+
+
+
+2 envs von interesse atari und deep mind control
+bevor deepmindc bei timo melden
+
+wir wollen env wo plasticity loss vorkommt:
+- phoenix (atari) auf jedenfall
+- demon attack (atari)
+- asterix (atari)
+
+deepmindcontrol:
+- agent: doctorqv2 zum laufen zu bringen
+  - was bedeutet für lipkon ob man mit oder ohne image augmentation trainiert?
+
+für atari vorher swig installieren
+
+
+
+
+# code todo
+dqn_atari von cleanrl dort probieren lipschitz zu tracken
+lipschitz constante tracken für bilder: gibs was, gibs nix
+
+- downsampling, normalisieren für bilder
