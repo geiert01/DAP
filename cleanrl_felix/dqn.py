@@ -43,7 +43,7 @@ class Args:
     # Algorithm specific arguments
     env_id: str = "MountainCar-v0"
     """the id of the environment"""
-    total_timesteps: int = 1500000
+    total_timesteps: int = 500000
     """total timesteps of the experiments"""
     learning_rate: float = 1e-3
     #learning_rate: float = 2.5e-4
@@ -166,8 +166,8 @@ poetry run pip install "stable_baselines3==2.0.0a1"
     torch.manual_seed(args.seed)
     torch.backends.cudnn.deterministic = args.torch_deterministic
 
-    device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
-    #device = torch.device("cuda" if torch.cuda.is_available() and args.cuda else "cpu")
+    #device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() and args.cuda else "cpu")
 
     # env setup
     envs = gym.vector.SyncVectorEnv(
