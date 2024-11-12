@@ -76,7 +76,7 @@ class Args:
     train_frequency: int = 4
     #train_frequency: int = 10
     """the frequency of training"""
-    log_lipschitz_every: int = 2000
+    log_lipschitz_every: int = 1000
     """Log Lipschitz constant every 2000 timesteps"""
 
 
@@ -167,7 +167,7 @@ poetry run pip install "stable_baselines3==2.0.0a1"
     torch.backends.cudnn.deterministic = args.torch_deterministic
 
     #device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
-    device = torch.device("cuda" if torch.cuda.is_available() and args.cuda else "cpu")
+    device = torch.device("cuda:0" if torch.cuda.is_available() and args.cuda else "cpu")
 
     # env setup
     envs = gym.vector.SyncVectorEnv(

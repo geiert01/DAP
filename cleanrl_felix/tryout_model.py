@@ -35,7 +35,8 @@ obs, _ = env.reset()
 q_network = QNetwork(env).to(device)
 
 # Load the saved model (Update the path to the actual model path)
-model_path = 'runs/MountainCar-v0__dqn_aol__1__1730384390/dqn_aol.cleanrl_model'
+model_path = 'runs/MountainCar-v0__dqn__1__1731413093/dqn.cleanrl_model'  # CUDA
+#model_path = 'runs/MountainCar-v0__dqn_aol__1__1730384390/dqn_aol.cleanrl_model'
 #model_path = 'runs/MountainCar-v0__dqn__1__1729613159/dqn.cleanrl_model'
 #model_path = 'runs/CartPole-v1__dqn__1__1728998507/dqn.cleanrl_model'
 q_network.load_state_dict(torch.load(model_path))
