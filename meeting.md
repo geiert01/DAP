@@ -16,34 +16,9 @@ https://ucloud.univie.ac.at/index.php/apps/calendar/p/J8VPUW8OQTKMSZET/dayGridMo
 jeden 10000 schritt im trinaing
 mit neighborhood sampling berechnen
 
-wie kann man lipschitz konstante aproxximieren?
-versuchen zu implementieren (auf cartpole)
-wie teuer ist es zu berechnen
-noch literatur anschauen, um lipschitz konstante zu approximieren
-
-
-terminal ls
-
-
-
 
 ### DQN paper
 file:///C:/Users/t_gei/Downloads/nature14236.pdf
-
-### Quantum paper
-https://arxiv.org/pdf/2410.21117
-
-cartpole lipschitz
-https://arxiv.org/pdf/1705.08551
-https://github.com/befelix/safe_learning/blob/master/examples/lyapunov_function_learning.ipynb
-use 
-https://arxiv.org/pdf/1312.6199 to calculate lipschitz
-
-
-#####  Model based  RL - lipschitz continuity
-https://arxiv.org/pdf/1804.07193
-
-
 
 #### TODO BIS 2 wochen
 entwickeln auf dem server
