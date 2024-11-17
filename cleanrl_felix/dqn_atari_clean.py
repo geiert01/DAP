@@ -19,6 +19,7 @@ from stable_baselines3.common.atari_wrappers import (
     NoopResetEnv,
 )
 from stable_baselines3.common.buffers import ReplayBuffer
+from torch.utils.tensorboard import SummaryWriter
 
 
 @dataclass
@@ -43,11 +44,11 @@ class Args:
     """whether to save model into the `runs/{run_name}` folder"""
 
     # Algorithm specific arguments
-    env_id: str = "BreakoutNoFrameskip-v4"
+    env_id: str = "PhoenixNoFrameskip-v4"
     """the id of the environment"""
     total_timesteps: int = 10000000
-    """total timesteps of the experiments"""
-    learning_rate: float = 1e-4
+    """total timesteps of the experiment"""
+    learning_rate: float = 2.5e-4
     """the learning rate of the optimizer"""
     num_envs: int = 1
     """the number of parallel game environments"""
@@ -56,21 +57,22 @@ class Args:
     gamma: float = 0.99
     """the discount factor gamma"""
     tau: float = 1.0
-    """the target network update rate"""
-    target_network_frequency: int = 1000
+    """the target network update rate (not used in standard DQN but kept for compatibility)"""
+    target_network_frequency: int = 10000
     """the timesteps it takes to update the target network"""
     batch_size: int = 32
-    """the batch size of sample from the reply memory"""
-    start_e: float = 1
+    """the batch size for sampling from the replay memory"""
+    start_e: float = 1.0
     """the starting epsilon for exploration"""
-    end_e: float = 0.01
+    end_e: float = 0.1
     """the ending epsilon for exploration"""
     exploration_fraction: float = 0.10
-    """the fraction of `total-timesteps` it takes from start-e to go end-e"""
-    learning_starts: int = 80000
-    """timestep to start learning"""
+    """the fraction of `total_timesteps` over which epsilon decreases"""
+    learning_starts: int = 50000
+    """timesteps before learning starts"""
     train_frequency: int = 4
-    """the frequency of training"""
+    """the frequency of training steps"""
+
 
 
 def make_env(env_id, seed, idx, capture_video, run_name):
@@ -127,6 +129,135 @@ def linear_schedule(start_e: float, end_e: float, duration: int, t: int):
     return max(slope * t + start_e, end_e)
 
 
+def spectral_norm_conv(conv_layer, input_shape, n_iterations=20, device='cpu'):
+    """
+    Estimates the spectral norm of a convolutional layer using the power iteration method.
+
+    Args:
+        conv_layer (nn.Conv2d): The convolutional layer whose spectral norm we want to estimate.
+        input_shape (tuple): The shape of the input tensor (batch_size, channels, height, width).
+        n_iterations (int): Number of iterations to perform in the power method.
+        device (str): The device to perform computations on ('cpu' or 'cuda').
+
+    Returns:
+        float: Estimated spectral norm (largest singular value) of the convolutional layer.
+    """
+
+    # start with normalized x_0
+    # we need x_{k+1} = \frac{A^T A x_k}{||A^T A x_k||}
+    # in the end \lambda_\max = \frac{x_k^T A^T A x_k}{x_k^T x_k}
+
+    # Initialize a random input tensor with requires_grad=True
+    x = torch.randn(*input_shape, device=device, requires_grad=True)
+    x = x / x.norm()  # x_0
+
+    for _ in range(n_iterations):
+        # Forward pass
+        y = conv_layer(x)  # A x_k
+        y_norm = y.norm()  # ||A x_k||
+
+        # Compute gradients
+        grad_x = torch.autograd.grad(y_norm, x, retain_graph=True, create_graph=False)[0]  # \frac{A^T A x_k}{||A x_k||}
+
+        # Normalize the gradient to get the next iteration input
+        x = grad_x / (grad_x.norm() + 1e-12)  # \frac{||A^T A x_k||}{||A x_k||} / \frac{A^T A x_k}{||A x_k||}
+        # this x is then the x_{k+1}
+        x = x.detach().requires_grad_(True)  # Detach to prevent gradient accumulation
+        # to stop comp. graph from growing, which stops redundant memory usage
+
+    # After iterations, compute the final norm
+    with torch.no_grad():  # lambda_max = ||A x||, since x is the eigenvector of the largest eigenvalue
+        y = conv_layer(x)
+        sigma = y.norm().item()
+
+    return sigma
+
+
+def spectral_norm_linear(linear_layer, n_iterations=20, device='cpu'):
+    """
+    Estimates the spectral norm of a linear layer using the power iteration method.
+
+    Args:
+        linear_layer (nn.Linear): The linear layer whose spectral norm we want to estimate.
+        n_iterations (int): Number of iterations for the power method (default is 20).
+        device (str): Device to perform computations on ('cpu' or 'cuda').
+
+    Returns:
+        float: Estimated spectral norm of the linear layer.
+    """
+    # Initialize a random vector for power iteration
+    u = torch.randn(linear_layer.weight.size(0), device=device)
+    u = u / u.norm()
+
+    for _ in range(n_iterations):
+        # v = W^T u
+        v = torch.mv(linear_layer.weight.t(), u)  # torch.mv ... matrix-vector-mult.
+        v = v / (v.norm() + 1e-12)
+
+        # u = W v
+        u = torch.mv(linear_layer.weight, v)
+        u = u / (u.norm() + 1e-12)
+
+    # Estimated spectral norm
+    sigma = torch.dot(u, torch.mv(linear_layer.weight, v)).item()
+    return sigma
+
+
+def compute_lipschitz_constant(model, input_shape):
+    """
+    Computes an upper bound on the Lipschitz constant of the given model.
+    """
+    device = next(model.parameters()).device
+    lipschitz_constants = []
+    modules = list(model.network)
+
+    current_input_shape = input_shape
+
+    for layer in modules:
+        if isinstance(layer, nn.Conv2d):
+            sigma = spectral_norm_conv(layer, current_input_shape, device=device)
+            lipschitz_constants.append(sigma)
+
+            # Compute output shape after convolution
+            # Using the formula: ((W - F + 2P) / S) + 1
+            batch_size, in_channels, H_in, W_in = current_input_shape
+            H_out = (H_in + 2 * layer.padding[0] - layer.dilation[0] * (layer.kernel_size[0] - 1) - 1) // layer.stride[
+                0] + 1
+            W_out = (W_in + 2 * layer.padding[1] - layer.dilation[1] * (layer.kernel_size[1] - 1) - 1) // layer.stride[
+                1] + 1
+            current_input_shape = (batch_size, layer.out_channels, H_out, W_out)
+
+        elif isinstance(layer, nn.Linear):
+            sigma = spectral_norm_linear(layer, device=device)
+            lipschitz_constants.append(sigma)
+            # After linear layer, the shape is (batch_size, out_features)
+            current_input_shape = (current_input_shape[0], layer.out_features)
+
+        elif isinstance(layer, nn.ReLU):
+            # ReLU is 1-Lipschitz
+            lipschitz_constants.append(1.0)
+
+        elif isinstance(layer, nn.Flatten):
+            # Flatten doesn't change Lipschitz constant
+            lipschitz_constants.append(1.0)
+            # After flatten, the shape is (current batch size, -1)
+            current_input_shape = (current_input_shape[0], -1)
+
+        else:
+            # For other layers (e.g., pooling), assume Lipschitz constant of 1
+            lipschitz_constants.append(1.0)
+
+    # Multiply the Lipschitz constants
+    total_lipschitz_constant = 1.0
+    for L in lipschitz_constants:
+        total_lipschitz_constant *= L
+
+    # Account for input scaling (dividing by 255.0)
+    total_lipschitz_constant *= (1.0 / 255.0)
+
+    return total_lipschitz_constant
+
+
 if __name__ == "__main__":
 
     args = tyro.cli(Args)
@@ -144,7 +275,11 @@ if __name__ == "__main__":
             monitor_gym=True,
             save_code=True,
         )
-
+    writer = SummaryWriter(f"runs/{run_name}")
+    writer.add_text(
+        "hyperparameters",
+        "|param|value|\n|-|-|\n%s" % ("\n".join([f"|{key}|{value}|" for key, value in vars(args).items()])),
+    )
 
     # TRY NOT TO MODIFY: seeding
     random.seed(args.seed)
@@ -178,6 +313,8 @@ if __name__ == "__main__":
         handle_timeout_termination=False,
     )
 
+    start_time = time.time()
+
     # TRY NOT TO MODIFY: start the game
     obs, _ = envs.reset(seed=args.seed)
     for global_step in range(args.total_timesteps):
@@ -197,6 +334,8 @@ if __name__ == "__main__":
             for info in infos["final_info"]:
                 if info and "episode" in info:
                     print(f"global_step={global_step}, episodic_return={info['episode']['r']}")
+                    writer.add_scalar("charts/episodic_return", info["episode"]["r"], global_step)
+                    writer.add_scalar("charts/episodic_length", info["episode"]["l"], global_step)
 
         # TRY NOT TO MODIFY: save data to reply buffer; handle `final_observation`
         real_next_obs = next_obs.copy()
@@ -221,6 +360,12 @@ if __name__ == "__main__":
                 old_val = q_network(data.observations).gather(1, data.actions).squeeze()  # Q(s,a)
                 loss = F.mse_loss(td_target, old_val)
 
+                if global_step % 100 == 0:
+                    writer.add_scalar("losses/td_loss", loss, global_step)
+                    writer.add_scalar("losses/q_values", old_val.mean().item(), global_step)
+                    print("SPS:", int(global_step / (time.time() - start_time)))
+                    writer.add_scalar("charts/SPS", int(global_step / (time.time() - start_time)), global_step)
+
                 # optimize the model
                 optimizer.zero_grad()
                 loss.backward()
@@ -232,6 +377,12 @@ if __name__ == "__main__":
                     target_network_param.data.copy_(
                         args.tau * q_network_param.data + (1.0 - args.tau) * target_network_param.data
                     )
+
+        # Compute and log the Lipschitz constant every 1000 steps
+        if global_step % 1000 == 0:
+            lipschitz_constant = compute_lipschitz_constant(q_network, input_shape=(1, 4, 84, 84))
+            writer.add_scalar("charts/lipschitz_constant", lipschitz_constant, global_step)
+            print(f"Global step {global_step}: Lipschitz constant = {lipschitz_constant}")
 
     if args.save_model:
         model_path = f"runs/{run_name}/{args.exp_name}.cleanrl_model"
@@ -249,7 +400,8 @@ if __name__ == "__main__":
             device=device,
             epsilon=0.05,
         )
-
+        for idx, episodic_return in enumerate(episodic_returns):
+            writer.add_scalar("eval/episodic_return", episodic_return, idx)
 
     envs.close()
-
+    writer.close()
