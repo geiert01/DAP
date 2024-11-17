@@ -21,9 +21,8 @@ mit neighborhood sampling berechnen
 file:///C:/Users/t_gei/Downloads/nature14236.pdf
 
 #### TODO BIS 2 wochen
-entwickeln auf dem server
 mnt/data ist local server
-home directory ist gebakuped, begrenzter platz 
+home directory ist gebackuped, begrenzter platz 
 geiert01dm: 100GB platz
 
 - (ein conda auf home, kann man auf allen server benutzen) -> 10 gb platz -> aufpassen was man da installiert und was nicht
@@ -60,3 +59,6 @@ lipschitz constante tracken für bilder: gibs was, gibs nix
 
 # TImo frage
 .folder wichtig in home?
+noframeskip oder ohne noframeskip model? 
+- ALE/Phoenix-v5
+- PhoenixNoFrameskip-v4
