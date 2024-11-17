@@ -12,5 +12,4 @@
 *.pdf
 
 test.py
-
-runs/*
+test_server.py
