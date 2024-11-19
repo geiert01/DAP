@@ -44,34 +44,34 @@ class Args:
     """whether to save model into the `runs/{run_name}` folder"""
 
     # Algorithm specific arguments
-    env_id: str = "PhoenixNoFrameskip-v4"
+    env_id: str = "ALE/DemonAttack-v5"
     """the id of the environment"""
-    total_timesteps: int = 10000000
-    """total timesteps of the experiment"""
-    learning_rate: float = 2.5e-4
+    total_timesteps: int = 5000000
+    """total timesteps of the experiments"""
+    learning_rate: float = 1e-4
     """the learning rate of the optimizer"""
     num_envs: int = 1
     """the number of parallel game environments"""
-    buffer_size: int = 1000000
+    buffer_size: int = int(1e4)
     """the replay memory buffer size"""
-    gamma: float = 0.99
+    gamma: float = 0.90
     """the discount factor gamma"""
     tau: float = 1.0
-    """the target network update rate (not used in standard DQN but kept for compatibility)"""
-    target_network_frequency: int = 10000
+    """the target network update rate"""
+    target_network_frequency: int = 5000
     """the timesteps it takes to update the target network"""
     batch_size: int = 32
-    """the batch size for sampling from the replay memory"""
-    start_e: float = 1.0
+    """the batch size of sample from the reply memory"""
+    start_e: float = 1
     """the starting epsilon for exploration"""
-    end_e: float = 0.1
+    end_e: float = 0.001
     """the ending epsilon for exploration"""
-    exploration_fraction: float = 0.10
-    """the fraction of `total_timesteps` over which epsilon decreases"""
-    learning_starts: int = 50000
-    """timesteps before learning starts"""
+    exploration_fraction: float = 0.2
+    """the fraction of `total-timesteps` it takes from start-e to go end-e"""
+    learning_starts: int = 10000
+    """timestep to start learning"""
     train_frequency: int = 4
-    """the frequency of training steps"""
+    """the frequency of training"""
 
 
 
