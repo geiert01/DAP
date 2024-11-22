@@ -13,3 +13,6 @@
 
 test.py
 test_server.py
+wandb/*
+runs/*
+logs/*
