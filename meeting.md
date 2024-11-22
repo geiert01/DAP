@@ -62,3 +62,30 @@ lipschitz constante tracken für bilder: gibs was, gibs nix
 noframeskip oder ohne noframeskip model? 
 - ALE/Phoenix-v5
 - PhoenixNoFrameskip-v4
+
+gitignore runs?
+
+
+
+
+# todo
+- cleanr rl parameter wieder reingeben
+- lipschitz konstante pinnnen in dem moment wo agent aufhört zu lernen (range wo agent ganz gut lernen kann)
+- PhoenixNoFrameskip-v4 richtig, noframe skip v4 in allen game envs
+
+gitignore
+-.idea
+- wandb
+runs
+logs
+
+- hopper-v4
+    mujoco installieren
+-   continious learning
+    lipschitz approx wie auf carrtpole, leichter wie bei bilder
+    lipschitz auch mit upper bound tracken
+    local/grid sampling with noise
+    gibs bessere methoden um lipschitz continuity zu approx
+      eine methode implementieren auf mujoco
+    
+
