@@ -48,7 +48,7 @@ class Args:
     """the user or org name of the model repository from the Hugging Face Hub"""
 
     # Algorithm specific arguments
-    env_id: str = "ALE/Phoenix-v5"
+    env_id: str = "PhoenixNoFrameskip-v4"
     """the id of the environment"""
     total_timesteps: int = 500000
     """total timesteps of the experiments"""

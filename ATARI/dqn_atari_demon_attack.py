@@ -44,7 +44,7 @@ class Args:
     """whether to save model into the `runs/{run_name}` folder"""
 
     # Algorithm specific arguments
-    env_id: str = "ALE/DemonAttack-v5"
+    env_id: str = "DemonAttackNoFrameskip-v4"
     """the id of the environment"""
     total_timesteps: int = 500000
     """total timesteps of the experiments"""

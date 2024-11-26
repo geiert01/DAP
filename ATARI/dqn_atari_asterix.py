@@ -44,7 +44,7 @@ class Args:
     """whether to save model into the `runs/{run_name}` folder"""
 
     # Algorithm specific arguments
-    env_id: str = "ALE/Asterix-v5"
+    env_id: str = "AsterixNoFrameskip-v4"
     """the id of the environment"""
     total_timesteps: int = 500000
     """total timesteps of the experiments"""
