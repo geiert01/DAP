@@ -38,42 +38,24 @@ class Workspace:
         self.work_dir = Path.cwd()
         print(f'workspace: {self.work_dir}')
         self.cfg = cfg
-        if self.cfg.use_wandb:
-            exp_name = cfg.task_name + '_' + cfg.exp_name + '_' + str(cfg.seed) + '_server1'
-            group_name = re.search(r'\.(.+)\.', cfg.agent._target_).group(1)
-            proj_name = "daw" if cfg.domain == 'adroit' else "daw_" + cfg.domain
-            wandb.init(project=proj_name,
-                       group=group_name,
-                       name=exp_name,
-                       config=cfg)
+    if self.cfg.use_wandb:
+        exp_name = f"{cfg.task_name}_{cfg.exp_name}_{cfg.seed}__{int(time.time())}"
+        proj_name = "mujoco"
+    
+        wandb.init(
+        project=proj_name,
+        name=exp_name,
+        config=cfg
+         )
         utils.set_seed_everywhere(cfg.seed)
         self.device = torch.device(cfg.device)
-        self._discount = cfg.discount
-        self._nstep = cfg.nstep
-        self.use_rm = cfg.use_rm
         self.setup()
         self.agent = make_agent(self.train_env.observation_spec(),
-                                self.train_env.action_spec(), self.cfg.agent)
-
+                                self.train_env.action_spec(),
+                                self.cfg.agent)
         self.timer = utils.Timer()
         self._global_step = 0
         self._global_episode = 0
-
-        # reward model
-        if self.use_rm:
-            self.cfg.reward.obs_shape = self.train_env.observation_spec().shape
-            self.cfg.reward.action_shape = self.train_env.action_spec().shape[0]
-            self.rm = make_rm(self.cfg.reward).to(self.device)
-            self.replay_cache = ReplayCache(device=self.device)
-            self.eval_replay_cache = ReplayCache(device=self.device)
-            self.pretrain_rm = self.cfg.reward.pretrain_rm
-
-            if self.cfg.reward.rm_model == 'amp':
-                self.amp_buffer = AMPBuffer(batch_size=self.cfg.batch_size, cfg=self.cfg)
-        else:
-            self.rm = None
-            self.pretrain_rm = False
-        self.agent.rm = self.rm if self.use_rm else None
 
     def setup(self):
         # create logger
@@ -81,9 +63,9 @@ class Workspace:
                              use_tb=self.cfg.use_tb,
                              use_wandb=self.cfg.use_wandb)
         # create envs
-        self.train_env = make_env(self.cfg.task_name, self.cfg.frame_stack,
+        self.train_env = dmc.make(self.cfg.task_name, self.cfg.frame_stack,
                                   self.cfg.action_repeat, self.cfg.seed)
-        self.eval_env = make_env(self.cfg.task_name, self.cfg.frame_stack,
+        self.eval_env = dmc.make(self.cfg.task_name, self.cfg.frame_stack,
                                  self.cfg.action_repeat, self.cfg.seed)
         # create replay buffer
         data_specs = (self.train_env.observation_spec(),
@@ -93,12 +75,11 @@ class Workspace:
 
         self.replay_storage = ReplayBufferStorage(data_specs,
                                                   self.work_dir / 'buffer')
-        self.replay_loader, self.buffer = make_replay_loader(
+
+        self.replay_loader = make_replay_loader(
             self.work_dir / 'buffer', self.cfg.replay_buffer_size,
-            self.cfg.batch_size,
-            self.cfg.replay_buffer_num_workers, self.cfg.save_snapshot,
-            self._nstep,
-            self._discount)
+            self.cfg.batch_size, self.cfg.replay_buffer_num_workers,
+            self.cfg.save_snapshot, self.cfg.nstep, self.cfg.discount)
         self._replay_iter = None
 
         self.video_recorder = VideoRecorder(
@@ -125,17 +106,10 @@ class Workspace:
         return self._replay_iter
 
     def eval(self):
-        step, episode, total_reward, total_sr = 0, 0, 0, 0
-        if self.pretrain_rm:
-            total_learned_reward = 0.0
-
+        step, episode, total_reward = 0, 0, 0
         eval_until_episode = utils.Until(self.cfg.num_eval_episodes)
         while eval_until_episode(episode):
-            episode_sr = False
-
             time_step = self.eval_env.reset()
-            if self.pretrain_rm:
-                self.eval_replay_cache.add(time_step)
             self.video_recorder.init(self.eval_env, enabled=(episode == 0))
             while not time_step.last():
                 with torch.no_grad(), utils.eval_mode(self.agent):
@@ -143,30 +117,18 @@ class Workspace:
                                             self.global_step,
                                             eval_mode=True)
                 time_step = self.eval_env.step(action)
-                if self.pretrain_rm:
-                    self.eval_replay_cache.add(time_step)
                 self.video_recorder.record(self.eval_env)
-                episode_sr = episode_sr or time_step.is_success
                 total_reward += time_step.reward
                 step += 1
 
-            total_sr += episode_sr
             episode += 1
-            
-            if self.pretrain_rm:
-                learned_return = self.eval_replay_cache.pop(None, self.rm)
-                total_learned_reward += learned_return
-
             self.video_recorder.save(f'{self.global_frame}.mp4')
 
         with self.logger.log_and_dump_ctx(self.global_frame, ty='eval') as log:
-            log('episode_success_rate', total_sr / episode)
             log('episode_reward', total_reward / episode)
             log('episode_length', step * self.cfg.action_repeat / episode)
             log('episode', self.global_episode)
             log('step', self.global_step)
-            if self.pretrain_rm: 
-                log('episode_learned_reward', total_learned_reward / episode)
 
     def train(self):
         # predicates
@@ -177,30 +139,15 @@ class Workspace:
         eval_every_step = utils.Every(self.cfg.eval_every_frames,
                                       self.cfg.action_repeat)
 
-        episode_step, episode_reward, episode_sr = 0, 0, False
+        episode_step, episode_reward = 0, 0
         time_step = self.train_env.reset()
-
-        if not self.pretrain_rm:
-            self.replay_storage.add(time_step)
-        else:
-            self.replay_cache.add(time_step)
-
+        self.replay_storage.add(time_step)
         self.train_video_recorder.init(time_step.observation)
         metrics = None
         while train_until_step(self.global_step):
             if time_step.last():
                 self._global_episode += 1
                 self.train_video_recorder.save(f'{self.global_frame}.mp4')
-
-                # reset env
-                time_step = self.train_env.reset()
-
-                if not self.pretrain_rm:
-                    self.replay_storage.add(time_step)
-                else:
-                    learned_return = self.replay_cache.pop(self.replay_storage, self.rm)
-                    self.replay_cache.add(time_step)
-
                 # wait until all the metrics schema is populated
                 if metrics is not None:
                     # log stats
@@ -210,20 +157,19 @@ class Workspace:
                                                       ty='train') as log:
                         log('fps', episode_frame / elapsed_time)
                         log('total_time', total_time)
-                        log('episode_success_rate', episode_sr)
                         log('episode_reward', episode_reward)
                         log('episode_length', episode_frame)
                         log('episode', self.global_episode)
                         log('buffer_size', len(self.replay_storage))
                         log('step', self.global_step)
-                        if self.pretrain_rm:
-                            log('episode_learned_reward', learned_return)
 
+                # reset env
+                time_step = self.train_env.reset()
+                self.replay_storage.add(time_step)
                 self.train_video_recorder.init(time_step.observation)
                 # try to save snapshot
                 if self.cfg.save_snapshot:
                     self.save_snapshot()
-                episode_sr = False
                 episode_step = 0
                 episode_reward = 0
 
@@ -240,30 +186,14 @@ class Workspace:
                                         eval_mode=False)
 
             # try to update the agent
-            if not seed_until_step(self.global_step) and self.global_step % self.cfg.update_every_steps == 0:
-                batch = next(self.replay_iter)
-                metrics = dict()
-
-                if self.use_rm and self.global_step % self.rm.expl_update_interval == 0:
-                    if self.cfg.reward.rm_model == 'amp':
-                        expert_obs = self.amp_buffer.sample()
-                        metrics.update(self.rm.update(batch,  expert_obs))   
-                    else:          
-                        metrics.update(self.rm.update(batch))
-                metrics.update(self.agent.update(batch, self.global_step))
-
+            if not seed_until_step(self.global_step):
+                metrics = self.agent.update(self.replay_iter, self.global_step)
                 self.logger.log_metrics(metrics, self.global_frame, ty='train')
 
             # take env step
-            episode_sr = episode_sr or time_step.is_success
             time_step = self.train_env.step(action)
             episode_reward += time_step.reward
-
-            if not self.pretrain_rm:
-                self.replay_storage.add(time_step)
-            else:
-                self.replay_cache.add(time_step)
-
+            self.replay_storage.add(time_step)
             self.train_video_recorder.record(time_step.observation)
             episode_step += 1
             self._global_step += 1
@@ -283,9 +213,15 @@ class Workspace:
             self.__dict__[k] = v
 
 
-@hydra.main(config_path='../diffusion_reward/configs/rl', config_name='default')
-def main(cfgs):
-    workspace = Workspace(cfgs)
+@hydra.main(config_path='cfgs', config_name='config')
+def main(cfg):
+    from train import Workspace as W
+    root_dir = Path.cwd()
+    workspace = W(cfg)
+    snapshot = root_dir / 'snapshot.pt'
+    if snapshot.exists():
+        print(f'resuming: {snapshot}')
+        workspace.load_snapshot()
     workspace.train()
 
 
