@@ -16,3 +16,15 @@ test_server.py
 wandb/*
 runs/*
 logs/*
+
+# drqv2
+mujoco/drqv2/exp_local
+mujoco/drqv2/exp
+mujoco/drqv2/exp_fixed
+mujoco/drqv2/exp_hard
+mujoco/drqv2/nbs
+mujoco/drqv2/code_snapshots
+mujoco/drqv2/exp_drqv2_*.py
+mujoco/drqv2/dmc_benchmarks.py
+mujoco/drqv2/check_sweep.py
+mujoco/drqv2/cancel_sweep.py
