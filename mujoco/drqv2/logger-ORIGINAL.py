@@ -1,11 +1,16 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
 import csv
 import datetime
 from collections import defaultdict
 
+import numpy as np
 import torch
+import torchvision
 from termcolor import colored
 from torch.utils.tensorboard import SummaryWriter
-import wandb
 
 COMMON_TRAIN_FORMAT = [('frame', 'F', 'int'), ('step', 'S', 'int'),
                        ('episode', 'E', 'int'), ('episode_length', 'L', 'int'),
@@ -16,8 +21,7 @@ COMMON_TRAIN_FORMAT = [('frame', 'F', 'int'), ('step', 'S', 'int'),
 COMMON_EVAL_FORMAT = [('frame', 'F', 'int'), ('step', 'S', 'int'),
                       ('episode', 'E', 'int'), ('episode_length', 'L', 'int'),
                       ('episode_reward', 'R', 'float'),
-                      ('total_time', 'T', 'time'),
-                      ('success_rate', 'SR', 'float')]
+                      ('total_time', 'T', 'time')]
 
 
 class AverageMeter(object):
@@ -34,13 +38,12 @@ class AverageMeter(object):
 
 
 class MetersGroup(object):
-    def __init__(self, csv_file_name, formating, use_wandb):
+    def __init__(self, csv_file_name, formating):
         self._csv_file_name = csv_file_name
         self._formating = formating
         self._meters = defaultdict(AverageMeter)
         self._csv_file = None
         self._csv_writer = None
-        self.use_wandb = use_wandb
 
     def log(self, key, value, n=1):
         self._meters[key].update(value, n)
@@ -114,31 +117,22 @@ class MetersGroup(object):
             return
         data = self._prime_meters()
         data['frame'] = step
-        if self.use_wandb:
-            wandb_data = {prefix + '/' + key: val for key, val in data.items()}
-            self._dump_to_wandb(data=wandb_data)
         self._dump_to_csv(data)
         self._dump_to_console(data, prefix)
         self._meters.clear()
 
-    def _dump_to_wandb(self, data):
-        wandb.log(data)
-
 
 class Logger(object):
-    def __init__(self, log_dir, use_tb=False, use_wandb=False):
+    def __init__(self, log_dir, use_tb):
         self._log_dir = log_dir
         self._train_mg = MetersGroup(log_dir / 'train.csv',
-                                     formating=COMMON_TRAIN_FORMAT,
-                                     use_wandb=use_wandb)
+                                     formating=COMMON_TRAIN_FORMAT)
         self._eval_mg = MetersGroup(log_dir / 'eval.csv',
-                                    formating=COMMON_EVAL_FORMAT,
-                                    use_wandb=use_wandb)
+                                    formating=COMMON_EVAL_FORMAT)
         if use_tb:
             self._sw = SummaryWriter(str(log_dir / 'tb'))
         else:
             self._sw = None
-        self.use_wandb = use_wandb
 
     def _try_sw_log(self, key, value, step):
         if self._sw is not None:
