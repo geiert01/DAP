@@ -89,3 +89,12 @@ logs
       eine methode implementieren auf mujoco
     
 
+
+
+# TODO
+- nochmal dqv2 versuchen
+- claude sonnet
+- methoden um plasticiy loss zu minimieren impleentieren und dann neu runnen und lipschitz messen
+ - zb layer norm
+ - mujoco random crop data augmentation
+- 
