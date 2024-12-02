@@ -12,6 +12,7 @@ os.environ['MUJOCO_GL'] = 'egl'
 
 from pathlib import Path
 
+import time
 import hydra
 import numpy as np
 import torch
@@ -38,15 +39,15 @@ class Workspace:
         self.work_dir = Path.cwd()
         print(f'workspace: {self.work_dir}')
         self.cfg = cfg
-    if self.cfg.use_wandb:
-        exp_name = f"{cfg.task_name}_{cfg.exp_name}_{cfg.seed}__{int(time.time())}"
-        proj_name = "mujoco"
-    
-        wandb.init(
-        project=proj_name,
-        name=exp_name,
-        config=cfg
-         )
+        if self.cfg.use_wandb:
+            exp_name = f"{cfg.exp_name}_{cfg.seed}__{int(time.time())}"
+            proj_name = "mujoco"
+        
+            wandb.init(
+            project=proj_name,
+            name=exp_name# ,
+            # config=cfg
+            )
         utils.set_seed_everywhere(cfg.seed)
         self.device = torch.device(cfg.device)
         self.setup()
