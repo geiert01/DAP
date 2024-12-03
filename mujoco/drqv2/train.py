@@ -94,27 +94,29 @@ def spectral_norm_conv(conv_layer, input_shape, n_iterations=20, device="cpu"):
     return sigma
 
 
-def compute_combined_lipschitz_constant(model, input_shape=(1, 3, 84, 84), device="cpu"):
-    # Compute the combined Lipschitz constant for a model with Conv2d and Linear layers.
+def compute_combined_lipschitz_constant(agent, input_shape=(1, 9, 84, 84), device="cpu"):
+    """
+    Compute the combined Lipschitz constant for an agent's network layers.
+    """
+    L = 1.0
+    linear_weight_list = []
 
-    L = 1.0  # Initialize the combined Lipschitz constant
-    linear_weight_list = []  # List to store Linear layer weights
-
-    for layer in model.network:
+    # Recursively process all layers in the agent's model
+    for layer in agent.modules():  # Use .modules() to iterate over all layers in the model
         if isinstance(layer, nn.Conv2d):
-            # Compute and log the spectral norm for Conv2d layers
+            # Compute spectral norm for Conv2d layers
             spectral_norm = spectral_norm_conv(layer, input_shape, device=device)
             L *= spectral_norm
         elif isinstance(layer, nn.Linear):
-            # Collect weights of Linear layers for later computation
+            # Collect Linear layer weights
             linear_weight_list.append(layer.weight.data)
 
     if linear_weight_list:
-        # Compute and log the Lipschitz constant for Linear layers
+        # Compute Lipschitz constant for Linear layers
         linear_lipschitz = lipschitz_constant_linear_layers(linear_weight_list, device=device)
         L *= linear_lipschitz
 
-    # Log the final combined Lipschitz constant
+    # Log the combined Lipschitz constant
     return L
 
 
