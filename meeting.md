@@ -98,3 +98,8 @@ logs
  - zb layer norm
  - mujoco random crop data augmentation
 - 
+
+
+
+## drqv2 with wandb
+https://github.com/TEA-Lab/diffusion_reward/blob/main/diffusion_reward/configs/rl/default.yaml
