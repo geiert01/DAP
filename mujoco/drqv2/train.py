@@ -16,6 +16,7 @@ import time
 import hydra
 import numpy as np
 import torch
+import torch.nn as nn
 import wandb
 from dm_env import specs
 
@@ -94,15 +95,22 @@ def spectral_norm_conv(conv_layer, input_shape, n_iterations=20, device="cpu"):
     return sigma
 
 
-def compute_combined_lipschitz_constant(agent, input_shape=(1, 9, 84, 84), device="cpu"):
+def compute_combined_lipschitz_constant(network, input_shape, device="cpu"):
     """
-    Compute the combined Lipschitz constant for an agent's network layers.
+    Compute the combined Lipschitz constant for a network.
+
+    Args:
+        network: The PyTorch nn.Module to analyze.
+        input_shape: The shape of the input tensor.
+        device: The device to perform computations on.
+
+    Returns:
+        Combined Lipschitz constant.
     """
     L = 1.0
     linear_weight_list = []
 
-    # Recursively process all layers in the agent's model
-    for layer in agent.modules():  # Use .modules() to iterate over all layers in the model
+    for layer in network.modules():
         if isinstance(layer, nn.Conv2d):
             # Compute spectral norm for Conv2d layers
             spectral_norm = spectral_norm_conv(layer, input_shape, device=device)
@@ -118,6 +126,7 @@ def compute_combined_lipschitz_constant(agent, input_shape=(1, 9, 84, 84), devic
 
     # Log the combined Lipschitz constant
     return L
+
 
 
 
@@ -243,11 +252,21 @@ class Workspace:
                 
                 # Compute and log Lipschitz constants every 1000 steps
                 if self.global_step % 1000 == 0:
-                    combined_lipschitz = compute_combined_lipschitz_constant(
-                        self.agent, input_shape=(1, 9, 84, 84), device=self.device
+                    actor_lipschitz = compute_combined_lipschitz_constant(
+                        network=self.agent.actor,
+                        input_shape=(1, 9, 84, 84),  # Replace `state_dim` with the actual state dimensionality
+                        device=self.device
                     )
+                    critic_lipschitz = compute_combined_lipschitz_constant(
+                        network=self.agent.critic,
+                        input_shape=(1, 9, 84, 84),  # Replace `state_dim` accordingly
+                        device=self.device
+                    )
+
+                    combined_lipschitz = actor_lipschitz * critic_lipschitz
+                    
                 else:
-                    combined_lipschitz = None  # Skip computation if not a logging step
+                   combined_lipschitz = None  # Skip computation if not a logging step
                 
                 self.train_video_recorder.save(f'{self.global_frame}.mp4')
                 # wait until all the metrics schema is populated
