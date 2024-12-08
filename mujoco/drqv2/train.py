@@ -24,6 +24,7 @@ from dm_env import specs
 
 import dmc
 import utils
+from lipschitz import compute_total_lipschitz
 from logger import Logger
 from replay_buffer import ReplayBufferStorage, make_replay_loader
 from video import TrainVideoRecorder, VideoRecorder
@@ -185,6 +186,12 @@ class Workspace:
             log('episode_length', step * self.cfg.action_repeat / episode)  # avg episode length
             log('episode', self.global_episode)  # total num of episodes
             log('step', self.global_step)  # total num of training-steps up to this point
+            
+        obs_shape = self.train_env.observation_spec().shape  # (C,H,W)
+        lipschitz_dict = compute_total_lipschitz(self.agent, obs_shape, device=self.device)
+        # Log lipschitz values directly to wandb
+        for k, v in lipschitz_dict.items():
+            wandb.log({f'eval/{k}': v}, step=self.global_step + 1) # +1 because false logging
 
     def train(self):
         # predicates
@@ -224,7 +231,13 @@ class Workspace:
                         log('episode', self.global_episode)
                         log('buffer_size', len(self.replay_storage))
                         log('step', self.global_step)
-                    
+
+                if self.global_frame % 1000 == 0 and self.cfg.use_wandb:
+                    obs_shape = self.train_env.observation_spec().shape  # (C,H,W)
+                    lipschitz_dict = compute_total_lipschitz(self.agent, obs_shape, device=self.device)
+                    for k, v in lipschitz_dict.items():
+                        wandb.log({f'train/{k}': v}, step=self.global_step)
+
 
                 # prepare for next episode
                 time_step = self.train_env.reset()  # reset env
