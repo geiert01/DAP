@@ -54,93 +54,6 @@ def sanitize_config(cfg):
             sanitized[key] = str(value)  # Convert unsupported types to strings
     return sanitized
 
-def lipschitz_constant_linear_layers(weights, c=1.0, device="cpu"):
-    # Compute the Lipschitz constant for linear layers using eigenvalues.
-
-    m = 0.5  # Slope approximation for ReLU
-    weights = [W.to(device) for W in weights]
-    n0 = weights[0].shape[1]  # Input dimension of the first layer
-
-    # Initialize matrix for eigenvalue computations
-    X_prev = c * torch.eye(n0, device=device)
-
-    for i in range(len(weights) - 1):
-        W_i = weights[i]
-        X_prev_inv = torch.linalg.pinv(X_prev)  # Compute pseudo-inverse of X_prev
-        A_i = W_i @ X_prev_inv @ W_i.T  # Construct symmetric matrix A_i
-
-        eig_max = torch.linalg.eigvalsh(A_i).max().item()  # Largest eigenvalue of A_i
-        lambda_i = 1 / (2 * m**2 * eig_max)  # Scaling factor for this layer
-        n_i = W_i.shape[0]  # Output dimension of the current layer
-
-        # Update X_i based on the current layer
-        X_i = lambda_i * torch.eye(n_i, device=device) - lambda_i**2 * m**2 * A_i
-        X_prev = X_i
-
-    eig_min = torch.linalg.eigvalsh(X_prev).min().item()  # Smallest eigenvalue of the final matrix
-    L_bar = (1 / eig_min) ** 0.5  # Intermediate Lipschitz bound
-
-    W_l = weights[-1]  # Weight matrix of the last layer
-    norm_W_l = torch.linalg.norm(W_l, 2).item()  # Spectral norm of the last weight matrix
-
-    # Final Lipschitz constant computation
-    L0 = (c**0.5) * L_bar * norm_W_l
-    return L0
-
-
-def spectral_norm_conv(conv_layer, input_shape, n_iterations=20, device="cpu"):
-    # Estimate the spectral norm of a Conv2d layer using the power iteration method.
-
-    # Initialize a random input tensor and normalize it
-    x = torch.randn(*input_shape, device=device, requires_grad=True)
-    x = x / x.norm()
-
-    for _ in range(n_iterations):
-        # Apply the Conv2d layer
-        y = conv_layer(x)
-        y_norm = y.norm()
-
-        # Compute the gradient of the norm w.r.t. the input
-        grad_x = torch.autograd.grad(y_norm, x, retain_graph=True, create_graph=False)[0]
-
-        # Normalize the gradient to prepare for the next iteration
-        x = grad_x / (grad_x.norm() + 1e-12)
-        x = x.detach().requires_grad_(True)  # Detach to avoid graph growth
-
-    # Final spectral norm estimation
-    with torch.no_grad():
-        y = conv_layer(x)
-        sigma = y.norm().item()
-    return sigma
-
-
-def compute_combined_lipschitz_constant(agent, input_shape=(1, 9, 84, 84), device="cpu"):
-    """
-    Compute the combined Lipschitz constant for an agent's network layers.
-    """
-    L = 1.0
-    linear_weight_list = []
-
-    # Recursively process all layers in the agent's model
-    for layer in agent.modules():  # Use .modules() to iterate over all layers in the model
-        if isinstance(layer, nn.Conv2d):
-            # Compute spectral norm for Conv2d layers
-            spectral_norm = spectral_norm_conv(layer, input_shape, device=device)
-            L *= spectral_norm
-        elif isinstance(layer, nn.Linear):
-            # Collect Linear layer weights
-            linear_weight_list.append(layer.weight.data)
-
-    if linear_weight_list:
-        # Compute Lipschitz constant for Linear layers
-        linear_lipschitz = lipschitz_constant_linear_layers(linear_weight_list, device=device)
-        L *= linear_lipschitz
-
-    # Log the combined Lipschitz constant
-    return L
-
-
-
 
 class Workspace:
     '''
@@ -294,28 +207,6 @@ class Workspace:
             if time_step.last():  # if episode ended
                 self._global_episode += 1
                 
-                # if "obs_shape" not in self.cfg:
-                #    self.cfg.obs_shape = self.train_env.observation_spec().shape
-
-                
-                # Compute and log Lipschitz constants every 1000 steps
-                if self.global_step % 1000 == 0:
-                    actor_lipschitz = compute_combined_lipschitz_constant(
-                        network=self.agent.actor,
-                        input_shape=(1, 9, 84, 84),  # Replace `state_dim` with the actual state dimensionality
-                        device=self.device
-                    )
-                    critic_lipschitz = compute_combined_lipschitz_constant(
-                        network=self.agent.critic,
-                        input_shape=(1, 9, 84, 84),  # Replace `state_dim` accordingly
-                        device=self.device
-                    )
-
-                    combined_lipschitz = actor_lipschitz * critic_lipschitz
-                    
-                else:
-                   combined_lipschitz = None  # Skip computation if not a logging step
-                
                 self.train_video_recorder.save(f'{self.global_frame}.mp4')
 
                 # wait until all the metrics schema is populated
@@ -333,16 +224,14 @@ class Workspace:
                         log('episode', self.global_episode)
                         log('buffer_size', len(self.replay_storage))
                         log('step', self.global_step)
-                        
-                        #if combined_lipschitz is not None:
-                            #log("lipschitz_constant", combined_lipschitz)
+                    
 
                 # prepare for next episode
                 time_step = self.train_env.reset()  # reset env
                 self.replay_storage.add(time_step)
                 self.train_video_recorder.init(time_step.observation)
 
-                # try to save snapshot
+                # save snapshot if specified so in config.yaml
                 if self.cfg.save_snapshot:
                     self.save_snapshot()  # saves current state of training (agent, optimizer, states, etc.)
                 episode_step = 0

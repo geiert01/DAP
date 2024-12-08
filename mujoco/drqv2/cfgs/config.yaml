@@ -1,7 +1,9 @@
+# Hydra configuration file to produce "cfg"-object
+
 defaults:
   - _self_
-  - task@_global_: hopper_hop
-  - override hydra/launcher: submitit_local
+  - task@_global_: hopper_stand
+  - override hydra/launcher: submitit_local  # some job scheduling
 
 # task settings
 frame_stack: 3
@@ -12,9 +14,9 @@ discount: 0.99
 num_seed_frames: 4000
 # eval
 eval_every_frames: 10000
-num_eval_episodes: 10
+num_eval_episodes: 10  # whenever its evaluating, its doing it 10 times
 
-# snapshot
+# snapshot (resume training later)
 save_snapshot: false
 
 # wandb
@@ -23,8 +25,8 @@ use_tb: false
 
 # replay buffer
 replay_buffer_size: 1000000
-replay_buffer_num_workers: 4
-nstep: 3
+replay_buffer_num_workers: 4  # each worker can do different tasks (all workers work in parallel)
+nstep: 3  # look ahead 3 steps and then use value function (more stable than =1)
 batch_size: 256
 
 # misc
@@ -34,11 +36,11 @@ save_video: true
 save_train_video: false
 
 # experiment
-exp_name: hopper
+exp_name: hopper_hop
 
 # agent
 lr: 1e-4
-feature_dim: 50
+feature_dim: 50  # representation size of the state
 
 agent:
   _target_: drqv2.DrQV2Agent
@@ -48,24 +50,26 @@ agent:
   lr: ${lr}
   critic_target_tau: 0.01
   update_every_steps: 2
-  use_tb: ${use_tb}
-  num_expl_steps: 2000
-  hidden_dim: 1024
-  feature_dim: ${feature_dim}
+  use_tb: true  # tensorboard (maybe also create a "use_wandb"?)
+  #use_tb: ${use_tb}  # tensorboard (maybe also create a "use_wandb"?)
+  use_wandb: true  # tensorboard (maybe also create a "use_wandb"?)
+  num_expl_steps: 2000  # how many steps to explore (weird that its different from num_seed_frames)
+  hidden_dim: 1024  # size of hidden layers
+  feature_dim: ${feature_dim}  # std of exploration noise
   stddev_schedule: ${stddev_schedule}
   stddev_clip: 0.3
 
 hydra:
-  run:
-    dir: ./exp_local/${now:%Y.%m.%d}/${now:%H%M%S}_${hydra.job.override_dirname}
+  run:  # base_directory/date/time_provided-override
+    dir: ./exp_local/${now:%Y.%m.%d}/${now:%H%M%S}_${hydra.job.override_dirname}  # where to save the run
   sweep:
-    dir: ./exp/${now:%Y.%m.%d}/${now:%H%M}_${agent_cfg.experiment}
+    dir: ./exp/${now:%Y.%m.%d}/${now:%H%M}_${agent_cfg.experiment}  # where to save the sweep
     subdir: ${hydra.job.num}
   launcher:
-    timeout_min: 4300
+    timeout_min: 4300  # max runtime for the job
     cpus_per_task: 10
-    gpus_per_node: 1
+    gpus_per_node: 1  # 2, if want to use both of the servers GPUs
     tasks_per_node: 1
-    mem_gb: 160
-    nodes: 1
+    mem_gb: 160  # check available memory with "free -h"
+    nodes: 1  # only use 1 machine
     submitit_folder: ./exp/${now:%Y.%m.%d}/${now:%H%M%S}_${agent_cfg.experiment}/.slurm
